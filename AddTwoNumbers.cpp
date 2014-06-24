@@ -22,101 +22,61 @@ int main()
   
   l3 = addTwoNumbers(l1, l2);
   
-  cout << l3->val << l3->next->val << l3->next->next->val << endl;
+  while(l3)
+    {
+      cout << l3->val;
+      l3 = l3->next;
+    }
+    cout <<endl;
+
 }
-
-ListNode *reverse(ListNode *l, int *len)
-{
-  *len = 1;
-  ListNode *pb = l, *pm = l->next, *pf;
-
-  if (pm)
-    {
-      pf = pm->next;
-      pb->next = NULL;
-
-      while(pm)
-	{
-	  ++(*len);
-	  pm->next = pb;
-
-	  pb = pm;
-	  pm = pf;
-	  
-	  if (pf)
-	    pf = pf->next;
-	}
-	  
-      return pb;
-    }
-  else
-    {
-      *len = 1;
-      return l;
-    }
-  
-  
-}  
 
 ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
 {
-    int len1 = 0, len2 = 0;
-  ListNode *result = NULL;
+  ListNode * result = NULL;
+  ListNode * p1 = l1, *p2 = l2, *q = NULL;
 
-  l1 = reverse(l1, &len1);
-  l2 = reverse(l2, &len2);
+  int sum = 0, carry = 0;
 
-  ListNode *p, *q, *r = result;
-  int diff;
-  if (len1 < len2)
+  while(p1 && p2)
     {
-      p = l2;
-      q = l1;
-      diff = len2-len1;
-    }
-  else
-    {
-      p = l1;
-      q = l2;
-      diff = len1-len2;
-    }
-
-  for (int i = 0; i < diff; ++i)
-    {
-      if (r)
-	{
-	  r->next = new ListNode(p->val);
-	  r = r->next;
-	}
-      else
-	{
-	  r = new ListNode(p->val);
-	  result = r;
-	}
-      p = p->next;
-    }
-
-  int sum = 0;
-  int carry = 0;
-
-    while(p)
-    {
-      sum = p->val + q->val;
+      sum = p1->val + p2->val + carry;
       carry = sum/10;
       sum %= 10;
 
-      if (r)
+      if (q)
 	{
-	  r->next = new ListNode(p->val+q->val);
-	  r = r->next;
+	  q->next = new ListNode(sum);
+	  q = q->next;
 	}
       else
 	{
-	  r = new ListNode(p->val+q->val);
-	  result = r;
+	  q = new ListNode(sum);
+	  result = q;
 	}
-      p = p->next;
-      q = q->next;
+      p1 = p1->next;
+      p2 = p2->next;
     }
-    return result;
+
+  if (p2)
+    p1 = p2;
+
+  while(p1)
+    {
+      sum = p1->val + carry;
+      carry = sum/10;
+      sum %= 10;
+
+      q->next = new ListNode(sum);
+
+      q = q->next;
+      p1 = p1->next;
+    }
+
+  if (carry)
+    {
+      q->next = new ListNode(carry);
+    }
+
+  return result;
 }
